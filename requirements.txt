@@ -1,0 +1,5 @@
+python==3.11.2
+whatsapp-api-client-python==0.0.44
+PyQt5Designer==5.14.1
+PyQt5==5.15.10
+psycopg2==2.9.6
