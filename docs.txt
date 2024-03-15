@@ -1,0 +1,682 @@
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Description:
+
+    It is an application that sends saved repeated messages via WhatsApp to the desired person/persons without requiring rewriting.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+Files in project:
+
+    1. Main.py
+
+    2. App.py
+
+    3. AppWindow.py (GUI)
+
+    4. ContactWindow.py (GUI)
+
+    5. InsertPersonWindow.py (GUI)
+
+    6. icons_rc.py (GUI)
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+A. Main.py (file):
+
+    This file contains codes that run the application and disconnect PostgreSQL after the application is closes.
+
+
+
+B. App.py (file):
+
+    This file contains codes that enable the application to work.
+
+
+    a. App (class):
+
+    
+        1. count (variable) -> int
+                
+            It is used in the unique numbering proccess for created frames and elements. 
+
+
+        2. prev_button (variable) -> QObject | None
+                
+            Gets the value of the previous button
+
+
+        3. beggining_proccess() (method) -> None
+                    
+            Method that runs when the application is started. It includes the following operations.
+            1. PostgreSQL connects.
+            2. Applies the saved contacts to Contact Window in application.
+            3. Reads saved message information from database.
+            4. Applies knowledge saved message information read.
+            5. Reads saved theme and languages settings from database.
+            6. Applies knowledge of theme and language read.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        4. contact_list() (method) -> None
+
+            Method that applies the saved contacts to Contact Window in application.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+        
+        5. get_saved_title() (method) -> list
+
+            Method that reads saved message titles from database.
+
+            Args:
+                parent : @App
+
+            Returns:
+                list : saved titles in database
+
+
+        6. get_sett() (method) -> dict[str, str]
+
+            Method that reads saved theme and languages settings from database.
+
+            Args:
+                parent : @App
+
+            Returns :
+                dict[str, str] : {"theme": current theme information,
+                             "language": current language informaiton}
+
+
+        7. apply_sett() (method) -> None
+
+            Method that applies knowledge of theme and language read.
+
+            Args:
+                parent : @App
+                theme : str
+                lang : str
+
+            Returns:
+                None
+
+
+        8. open_settings_page() (method) -> None
+
+            Method that opens Settings Page (page_3).
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        9. open_new_msg_page() (method) -> None
+
+            Method that opens New Message Page (page_2).
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        10. open_new_person_window() (method) -> None
+
+            Method that opens Insert Person Window.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        11. insert_new_person() (method) -> None
+
+            Method that inserts new person to contacts in app and SQL.\n
+            That person must have unique values, valid phone number (sample: +1234567890).
+            That person must not have None value.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        12. color_rgb() (method) -> Literal[] | None
+
+            Method that returns rgb values of theme colors.
+
+            Args:
+                parent : @App
+                color : str
+
+            Returns:
+                Literal[] : ['background-color: rgb(169, 117, 119);', 'background-color: rgb(170, 170, 170);',
+                            'background-color: rgb(29, 71, 75);', 'background-color: rgb(103, 128, 126);',
+                            'background-color: rgb(197, 183, 173);', 'background-color: rgb(137, 119, 90);']
+                None
+
+
+        13. msg_frame() (method) -> None
+
+            Method that creates Message Frame in Main Page (page_1).\n
+            It inculudes just PyQt5 GUI codes.
+
+            Args:
+                parent : @App
+                text : str
+
+            Returns:
+                None
+
+
+        14. get_msg_info() (method) -> dict[str, list, bool, int, int, list] | None
+
+            Method that returns information about a message saved in the database as a dict.
+            msg_info = {"title": "",
+                        "msg": [],
+                        "auto_timer": None,
+                        "wait_time": 0,
+                        "repetition": 0,
+                        "contacts": []}
+
+            Args:
+                parent : @App
+                title : str
+
+            Returns:
+                dict[str, list, bool, int, int, list] : {
+                    "title" : title of message
+                    "msg" : msg list
+                    "auto_timer" : whether the automatic timer is on or not
+                    "wait_time" : wait time with manuel timer
+                    "repetition" : number of repetition
+                    "contacts" : target contact list
+                    }
+                None
+
+
+        15. fill_msg_info() (method) -> None
+
+            Method that shows the information which message saved in database in page_2.
+
+            Args:
+                parent : @App
+                msg_info : dict[str, list, bool, int, int, list]
+
+            Returns:
+                None
+
+
+        16. increase_msg() (method) -> None
+
+            Method that creates Text Edit for a new message. It inculudes just PyQt5 GUI codes.
+
+            Args:
+                parent : @App
+                msg : str
+
+            Returns:
+                None
+
+
+        17. edit_msg() (method) -> None
+
+            Method that fills the page_2 with the information of the selected message.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        18. selected_msg() (method) -> list | None
+
+            Method that returns information of the selected message/messages.
+
+            Args:
+                parent : @App
+
+            Returns:
+                list : list of information of selected messages
+                None
+
+
+        19. tel_number() (method) -> str
+
+            Method that returns phone number of the person whose name we know.
+
+            Args:
+                parent : @App
+                name : str
+
+            Returns:
+                str : phone number of name
+
+
+        20. send_msg() (method) -> None
+
+            Method that sends msg.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        21. delete_msg() (method) -> None
+
+            Method that deletes a saved message in the database and the message frame in page_1.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        22. clear_page() (method) -> None
+
+            Method that clears values in page_2.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        23. increase_person() (method) -> None
+
+            Method that inserts the target contact to the list. (From Table QWidget in Contact Window to QComboBox in page_2).
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        24. isExist() (method) -> bool
+
+            Method that returns whether the contact is included in information about the saved message.
+
+            Args:
+                parent : @App
+                person : str
+
+            Returns:
+                bool : whether the person is registered in the contact book or not
+
+
+        25. delete_person() (method) -> None
+
+            If the person is not exist in the saved messages, Method that deletes person from database and contacts in Contact Window.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        26. decrease_person() (method) -> None
+
+            Method that deletes the target contact to the list.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        27. current_msg_info() (method) -> dict[str, list, bool, int, int, list]
+
+            Method that returns the current message information read from page_2 to save the message.
+
+            Args:
+                parent : @App
+
+            Returns:
+                dict[str, list, bool, int, int, list] : {
+                    "title" : title of message
+                    "msg" : msg list
+                    "auto_timer" : whether the automatic timer is on or not
+                    "wait_time" : wait time with manuel timer
+                    "repetition" : number of repetition
+                    "contacts" : target contact list
+                    }
+
+
+        28. save_msg() (method) -> None
+
+            Method that saves the message to database and page_1. If it is a new message it creates message frame.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        29. update_sett() (method) -> None
+
+            Method that updates settings and saves database.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        30. dark_green() (method) -> None
+
+            Method that applies dark green theme.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        31. light_green() (method) -> None
+
+            Method that applies light green theme.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        32. pink() (method) -> None
+
+            Method that applies pink theme.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        33. grey() (method) -> None
+
+            Method that applies grey theme.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        34. brown() (method) -> None
+
+            Method that applies brown theme.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        35. beige() (method) -> None
+
+            Method that applies beige theme.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        36. english() (method) -> None
+
+            Method that applies english lang. (Method that does nothing for now.)
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        37. open_contact_window() (method) -> None
+
+            Method that opens Contact Window.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        38. previous_page() (method) -> None
+
+            Method that opens page_1.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        39. connect() (method) -> None
+
+            Method that connections PostgreSQL.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        40. disconnect() (method) -> None
+
+            Method that disconnections PostgreSQL
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        41. info_about_app() (method) -> None
+
+            Method that opens the message box about application.
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        42. unique_person() (method) -> bool
+
+            Method that returns whether the entered name or number values exist in the contact book.
+
+            Args:
+                parent : @App
+                name : str
+                number : str
+            
+            Returns:
+                bool : whether the name and number are unique
+
+
+        43. unique_person_error() (method) -> None
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        44. confirmation() (method) -> bool
+
+            Args:
+                parent : @App
+
+            Returns:
+                bool : true/false equivalent of yes/no value received from the user
+
+
+        45. completed() (method) -> None
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        46. selected_error() (method) -> None
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        47. unique_title() (method) -> bool
+
+            Method that checks whether the current title value is unique while saving a new message.
+
+            Args:
+                parent : @App
+
+            Returns:
+                bool : whether title is unique or not
+
+
+        48. unique_title_error() (method) -> None
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        49. none_value() (method) -> bool
+
+            Args:
+                parent : @App
+
+            Returns:
+                bool : whether required fields are null or not
+
+
+        50. none_value_error() (method) -> None
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+        51. exist_person_error() (method) -> None
+
+            Args:
+                parent : @App
+
+            Returns:
+                None
+
+
+
+    b. InsertPerson (class):
+
+
+        1. clear_page() (method) -> None
+
+            Method that clears Insert Person Window.
+
+            Args:
+                parent : @InsertPerson
+
+            Returns:
+                None
+
+        
+        2. none_value() (method) -> bool
+
+            Method that checks whether required fields are null when saving the person.
+
+            Args:
+                parent : @InsertPerson
+                name : name of contact
+                number : number of contact
+
+            Returns:
+                bool : whether required fields are null or not
+
+
+        3. valid_number() (method) -> bool
+
+            Method that checks whether the number is valid or not.
+            Sample valid number: +country code 1234567890
+
+            Args:
+                parent : @InsertPerson
+                number : number of contact
+
+            Returns:
+                bool : whether it is a valid number or not
+
+
+        4. valid_number_error() (method) -> None
+
+            Args:
+                parent : @InsertPerson
+
+            Returns:
+                None
+
+
+
+    c. Contact (class):
+
+
+        1. person() (method) -> str
+
+            Method that returns the current contact in the name column.
+
+            Args:
+                parent : @Contact
+
+            Returns:
+                str : current person name
+
+----------------------------------------------------------------------------------------------------------------------------------------
